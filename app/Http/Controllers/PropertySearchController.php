@@ -20,7 +20,7 @@ class PropertySearchController extends Controller
                     'garages' => $propertyRequest->garages,
                 ])
                 ->byName($propertyRequest->name)
-                ->byPrice($propertyRequest->price)
+                ->byPrice($propertyRequest->price_min, $propertyRequest->price_max)
                 ->get()
         );
     }

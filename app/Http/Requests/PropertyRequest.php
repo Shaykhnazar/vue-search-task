@@ -9,9 +9,9 @@ class PropertyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['string'],
-            'price' => ['nullable', 'array', 'min:1', 'max:2'],
-            'price.*' => ['numeric'],
+            'name' => ['nullable', 'string'],
+            'price_min' => ['nullable', 'numeric', 'required_with:price_max'],
+            'price_max' => ['nullable', 'numeric', 'required_with:price_min'],
             'bedrooms' => ['nullable', 'integer'],
             'bathrooms' => ['nullable', 'integer'],
             'storeys' => ['nullable', 'integer'],

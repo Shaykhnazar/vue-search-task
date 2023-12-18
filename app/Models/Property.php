@@ -27,11 +27,11 @@ class Property extends Model
         return $query->where('name', 'like', '%' . $name . '%');
     }
 
-    public function scopeByPrice(Builder $query, ?array $price): Builder
+    public function scopeByPrice(Builder $query, ?int $priceMin, ?int $priceMax): Builder
     {
-        if (!$price) {
+        if (!$priceMin && !$priceMax) {
             return $query;
         }
-        return $query->whereBetween('price', $price);
+        return $query->whereBetween('price', [$priceMin, $priceMax]);
     }
 }
