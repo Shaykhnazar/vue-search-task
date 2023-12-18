@@ -14,7 +14,7 @@ trait SupportFilter
         return $query->where(function (Builder $builder) use ($filterFields) {
             foreach ($filterFields as $field => $value) {
                 $builder->when($value, function (Builder $builder) use ($field, $value) {
-                    $builder->orWhere($field, $value);
+                    $builder->where($field, $value);
                 });
             }
         });
