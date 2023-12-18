@@ -10,8 +10,8 @@ class PropertyRequest extends FormRequest
     {
         return [
             'name' => ['string'],
-            'price_from' => ['nullable', 'numeric', 'required_with:price_to'],
-            'price_to' => ['nullable', 'numeric', 'required_with:price_from'],
+            'price' => ['nullable', 'array', 'min:1', 'max:2'],
+            'price.*' => ['numeric'],
             'bedrooms' => ['nullable', 'integer'],
             'bathrooms' => ['nullable', 'integer'],
             'storeys' => ['nullable', 'integer'],

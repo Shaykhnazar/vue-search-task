@@ -19,7 +19,7 @@ class Property extends Model
         'garages',
     ];
 
-    public function scopeByName(Builder $query, $name): Builder
+    public function scopeByName(Builder $query, ?string $name): Builder
     {
         if (!$name) {
             return $query;
@@ -27,11 +27,11 @@ class Property extends Model
         return $query->where('name', 'like', '%' . $name . '%');
     }
 
-    public function scopeByPrice(Builder $query, $priceFrom, $priceTo): Builder
+    public function scopeByPrice(Builder $query, ?array $price): Builder
     {
-        if (!$priceFrom && !$priceTo) {
+        if (!$price) {
             return $query;
         }
-        return $query->whereBetween('price', [$priceFrom, $priceTo]);
+        return $query->whereBetween('price', $price);
     }
 }
