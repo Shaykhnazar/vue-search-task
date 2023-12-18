@@ -1,5 +1,7 @@
 <?php
 
+use App\Services\DriveService;
+
 return [
 
     /*
@@ -41,6 +43,12 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
+            'throw' => false,
+        ],
+
+        DriveService::PARSE => [
+            'driver' => 'local',
+            'root' => storage_path('app/parse'),
             'throw' => false,
         ],
 
