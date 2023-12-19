@@ -20,6 +20,8 @@ I have used [xampp server with php version 8.2.12](https://www.apachefriends.org
 
 ## Установка
 
+### Backend
+
 ##### Установка зависимостей
 ```
 composer install
@@ -49,12 +51,17 @@ php artisan storage:link
 php artisan migrate:fresh --seed
 ```
 
-## Frontend
+### Frontend
 ```
 cd frontend
+```
+```
 npm install
 ```
-and another commands at [here](/frontend/README.md):
+```
+cp .env.example .env
+```
+and another commands at [here](frontend%2FREADME.md):
 
 ## Документация API
 
