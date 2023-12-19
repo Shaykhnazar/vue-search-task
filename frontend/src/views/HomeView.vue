@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import {onBeforeMount, reactive, ref} from 'vue'
-import type {FormInstance} from 'element-plus'
+import type {FormInstance, FormRules} from 'element-plus'
 import ElementBaseInput from "@/components/ElementBaseInput.vue";
 import api from "../services/api";
 
@@ -10,7 +10,7 @@ const loading = ref(false)
 const formRef = ref<FormInstance>()
 
 const form = reactive({
-    name: '',
+    name: null,
     priceMin: null,
     priceMax: null,
     garages: null,
@@ -27,7 +27,8 @@ function getPropertyData() {
     loading.value = true
     api.properties.listWithFilter({
         name: form.name ?? null,
-        price: [form.priceMin, form.priceMax] ?? null,
+        price_min: form.priceMin ?? null,
+        price_max: form.priceMax ?? null,
         garages: form.garages ?? null,
         bedrooms: form.bedrooms ?? null,
         bathrooms: form.bathrooms ?? null,
@@ -82,6 +83,53 @@ const columns = [
     },
 ];
 
+const checkDigit = (rule: any, value: any, callback: any) => {
+    if (value && !Number.isInteger(value)) {
+        callback(new Error('Please input digits'))
+    } else {
+        if (value < 0) {
+            callback(new Error('Input value must be greater than 0'))
+        }
+        callback()
+    }
+}
+
+const validatePriceMin = (rule: any, value: any, callback: any) => {
+    if (value && !Number.isInteger(value)) {
+        callback(new Error('Please input digits'))
+    } else {
+        if (value && !form.priceMax) {
+            callback(new Error('Price to is required'))
+        } else if (value && value > form.priceMax) {
+            callback(new Error('Price from must be less than Price to'))
+        }
+        callback()
+    }
+}
+
+const validatePriceMax = (rule: any, value: any, callback: any) => {
+    if (value && !Number.isInteger(value)) {
+        callback(new Error('Please input digits'))
+    } else {
+        if (value && !form.priceMin) {
+            callback(new Error('Price from is required'))
+        } else if (value && value < form.priceMax) {
+            callback(new Error('Price to must be greater than Price from'))
+        }
+        callback()
+    }
+}
+
+const rules = reactive<FormRules<typeof formRef>>({
+    priceMin: [{validator: validatePriceMin, trigger: 'blur'}],
+    priceMax: [{validator: validatePriceMax, trigger: 'blur'}],
+    garages: [{validator: checkDigit, trigger: 'blur'}],
+    bedrooms: [{validator: checkDigit, trigger: 'blur'}],
+    bathrooms: [{validator: checkDigit, trigger: 'blur'}],
+    storeys: [{validator: checkDigit, trigger: 'blur'}]
+})
+
+
 </script>
 
 <template>
@@ -94,16 +142,17 @@ const columns = [
               <el-form
                   ref="formRef"
                   :model="form"
+                  :rules="rules"
                   label-width="100px"
                   class="demo-ruleForm"
               >
-                  <ElementBaseInput :form="form" field-name="name" form-input-type="text" field-type="string"/>
-                  <ElementBaseInput :form="form" field-name="priceMin" />
-                  <ElementBaseInput :form="form" field-name="priceMax" />
-                  <ElementBaseInput :form="form" field-name="garages" />
-                  <ElementBaseInput :form="form" field-name="bedrooms" />
-                  <ElementBaseInput :form="form" field-name="bathrooms" />
-                  <ElementBaseInput :form="form" field-name="storeys" />
+                  <ElementBaseInput :form="form" field-name="name" label-name="Name" form-input-type="text" field-type="string"/>
+                  <ElementBaseInput :form="form" field-name="priceMin" label-name="Price from" />
+                  <ElementBaseInput :form="form" field-name="priceMax" label-name="Price to" />
+                  <ElementBaseInput :form="form" field-name="garages" label-name="Garages" />
+                  <ElementBaseInput :form="form" field-name="bedrooms" label-name="Bedrooms" />
+                  <ElementBaseInput :form="form" field-name="bathrooms" label-name="Bathrooms" />
+                  <ElementBaseInput :form="form" field-name="storeys" label-name="Storeys"/>
                   <el-form-item>
                       <el-button type="primary" @click="submitForm(formRef)">Submit</el-button>
                       <el-button @click="resetForm(formRef)">Reset</el-button>

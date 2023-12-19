@@ -1,21 +1,26 @@
 <template>
   <el-form-item
-      :label="fieldName"
-      prop="age"
-      :rules="[
-        { required: fieldRequired, message: `${fieldName} is required` },
-        { type: fieldType, message: `${fieldName} must be a ${fieldType}` },
-      ]"
+      :label="labelName"
+      :prop="fieldName"
   >
     <el-input
-        v-model="form[fieldName]"
+        v-if="formInputType === 'number'"
+        v-model.number="form[fieldName]"
+        :type="formInputType"
+        autocomplete="off"
+    />
+    <el-input
+        v-else
+        v-model="inputValue"
         :type="formInputType"
         autocomplete="off"
     />
   </el-form-item>
 </template>
 <script setup>
-defineProps({
+import { ref, watchEffect } from 'vue'
+
+const props = defineProps({
     fieldName: {
         type: String,
         required: true
@@ -24,17 +29,22 @@ defineProps({
         type: Object,
         required: true
     },
+    labelName: {
+        type: String,
+    },
     fieldType: {
         type: String,
         default: 'number'
-    },
-    fieldRequired: {
-        type: Boolean,
-        default: false
     },
     formInputType: {
         type: String,
         default: 'number'
     }
+})
+
+const inputValue = ref(props.form[props.fieldName])
+
+watchEffect(() => {
+    props.form[props.fieldName] = inputValue.value
 })
 </script>
